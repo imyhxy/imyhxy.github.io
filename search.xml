@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Hexo &amp; gitpage equal to blogs</title>
-    <url>//blog/2018/03/16/deploy-hexo.html</url>
+    <url>//blog/2018/03/15/deploy-hexo.html</url>
     <content><![CDATA[<h3 id="What-is-Hexo？"><a href="#What-is-Hexo？" class="headerlink" title="What is Hexo？"></a>What is Hexo？</h3><div class="note primary"><p><a href="https://hexo.io/">Hexo</a> 是一个静态网站生成软件，它通过预定义的网页模板，把 <a href="https://daringfireball.net/projects/markdown/">Markdown</a> 文件渲染为一个静态网页。除此之外，Hexo 还支持高度的自定义设置，通过应用社区共享的主题样式，你能轻易地实现网页的个性化。同时，我们可以把 Hexo 生成的静态网页部署到静态网站托管服务器上，例如：<a href="https://pages.github.com/">GitPage</a>，让我们能快速搭建一个个人博客。</p>
 </div>
 
@@ -156,7 +156,7 @@
   </entry>
   <entry>
     <title>Introdution to hexo theme - Next</title>
-    <url>//blog/2018/03/19/hexo-theme-next.html</url>
+    <url>//blog/2018/03/18/hexo-theme-next.html</url>
     <content><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h3 id="主题下载"><a href="#主题下载" class="headerlink" title="主题下载"></a>主题下载</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> &lt;hexo_folder&gt;</span><br><span class="line">git <span class="built_in">clone</span> git@github.com:imyhxy/hexo-theme-next.git</span><br><span class="line">mv hexo-theme-next themes/next</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h3><p>在 <hexo_folder> 目录下有网站的配置文件_config.yml，使用文本编辑器更改文件内的 theme 字段为 next，注意不应使用 &lt;tab&gt;，而应该使用空格进行缩进。</hexo_folder></p>
@@ -360,7 +360,7 @@
   </entry>
   <entry>
     <title>网易云音乐无法联网</title>
-    <url>//blog/2018/03/20/netease-refused-connection.html</url>
+    <url>//blog/2018/03/19/netease-refused-connection.html</url>
     <content><![CDATA[<h1 id="症状"><a href="#症状" class="headerlink" title="症状"></a>症状</h1><p>前几天网易云突然不太能联网了，具体表现为：</p>
 <ul>
 <li>联网断断续续，通常刚开机可用，刚打开软件时可以播放一首歌</li>
@@ -390,7 +390,7 @@
   </entry>
   <entry>
     <title>TensorFlow 常用技巧收集</title>
-    <url>//blog/2018/04/14/tensorflow-commonly-use-trick.html</url>
+    <url>//blog/2018/04/13/tensorflow-commonly-use-trick.html</url>
     <content><![CDATA[<h1 id="备份与恢复模型"><a href="#备份与恢复模型" class="headerlink" title="备份与恢复模型"></a>备份与恢复模型</h1><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">saver = tf.train.Saver()</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    saver.save(sess, saved_model_path)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    saver.restore(sess, saved_model_path)</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="部分恢复模型"><a href="#部分恢复模型" class="headerlink" title="部分恢复模型"></a>部分恢复模型</h2><p>首先通过 tf.trainable_variables () 获得新模型的所有可训练参数，然后把新增参数剔除。新建一个 saver 对象，并把要恢复的参数传进去。</p>
