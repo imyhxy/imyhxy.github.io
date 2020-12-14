@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#6c599f">
+<meta name="generator" content="Hexo 5.2.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/assets/images/favicon-650x650.svg" color="#6c599f">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/assets/flower/cdn/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=EB+Garamond:300,300italic,400,400italic,700,700italic|Noto+Serif+SC:300,300italic,400,400italic,700,700italic|Long+Cang:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"imyhxy.github.io","root":"/","images":"/assets/flewer/cdn/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="鉴于我经常把系统弄出各种疑难杂症，所以把装机过程记录下来，下次装机不用四处找教程，节省时间。   系统的安装系统的选择">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 系统安装 - Server">
+<meta property="og:url" content="https://imyhxy.github.io/blog/2018/03/19/linux-server-deploy.html">
+<meta property="og:site_name" content="imyhxy">
+<meta property="og:description" content="鉴于我经常把系统弄出各种疑难杂症，所以把装机过程记录下来，下次装机不用四处找教程，节省时间。   系统的安装系统的选择">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-03-19T15:05:10.000Z">
+<meta property="article:modified_time" content="2020-12-08T05:02:53.640Z">
+<meta property="article:author" content="J.M.">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="ubuntu">
+<meta property="article:tag" content="server">
+<meta property="article:tag" content="remote desktop">
+<meta property="article:tag" content="installation">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://imyhxy.github.io/blog/2018/03/19/linux-server-deploy.html">
+
+
+<script data-pjax class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script><link rel="stylesheet" href="/assets/flower/CaoMei/style.min.css">
+
+<script type="text/javascript">
+// 注意：live2d_path 参数应使用绝对路径
+//const live2d_path = "https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/";
+//const live2d_path = "/live2d-widget/";
+const live2d_path = "/assets/flower/cdn/live2d/";
+
+// 封装异步加载资源的方法
+function loadExternalResource(url, type) {
+	return new Promise((resolve, reject) => {
+		let tag;
+
+		if (type === "css") {
+			tag = document.createElement("link");
+			tag.rel = "stylesheet";
+			tag.href = url;
+		}
+		else if (type === "js") {
+			tag = document.createElement("script");
+			tag.src = url;
+		}
+		if (tag) {
+			tag.onload = () => resolve(url);
+			tag.onerror = () => reject(url);
+			document.head.appendChild(tag);
+		}
+	});
+}
+
+// 加载 waifu.css live2d.min.js waifu-tips.js
+if (screen.width >= 768) {
+	Promise.all([
+		loadExternalResource(live2d_path + "waifu.min.css", "css"),
+		loadExternalResource(live2d_path + "live2d.min.js", "js"),
+		loadExternalResource(live2d_path + "waifu-tips.min.js", "js")
+	]).then(() => {
+		initWidget({
+			waifuPath: live2d_path + "waifu-tips.json",
+            apiPath: "https://api.dlzhang.com/live2d/", // https://live2d.fghrsh.net/api/
+			//cdnPath: "https://cdn.jsdelivr.net/gh/fghrsh/live2d_api/"
+		});
+	});
+}
+// initWidget 第一个参数为 waifu-tips.json 的路径，第二个参数为 API 地址
+// API 后端可自行搭建，参考 https://github.com/fghrsh/live2d_api
+// 初始化看板娘会自动加载指定目录下的 waifu-tips.json
+
+console.log(`
+  く__,.ヘヽ.        /  ,ー､ 〉
+           ＼ ', !-─‐-i  /  /´
+           ／｀ｰ'       L/／｀ヽ､
+         /   ／,   /|   ,   ,       ',
+       ｲ   / /-‐/  ｉ  L_ ﾊ ヽ!   i
+        ﾚ ﾍ 7ｲ｀ﾄ   ﾚ'ｧ-ﾄ､!ハ|   |
+          !,/7 '0'     ´0iソ|    |
+          |.从"    _     ,,,, / |./    |
+          ﾚ'| i＞.､,,__  _,.イ /   .i   |
+            ﾚ'| | / k_７_/ﾚ'ヽ,  ﾊ.  |
+              | |/i 〈|/   i  ,.ﾍ |  i  |
+             .|/ /  ｉ：    ﾍ!    ＼  |
+              kヽ>､ﾊ    _,.ﾍ､    /､!
+              !'〈//｀Ｔ´', ＼ ｀'7'ｰr'
+              ﾚ'ヽL__|___i,___,ンﾚ|ノ
+                  ﾄ-,/  |___./
+                  'ｰ'    !_,.:
+`);
+</script>
+
+<title>Ubuntu 系统安装 - Server | imyhxy</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">imyhxy</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">imyhxy's blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-text">系统的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-text">系统的选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5BIOS"><span class="nav-text">进入 BIOS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-text">Ubuntu 安装过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E5%BB%BA%E8%AE%AE"><span class="nav-text">分区建议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE"><span class="nav-text">系统配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Blacklist-Nvidia"><span class="nav-text">Blacklist Nvidia</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E7%B3%BB%E7%BB%9F-%E5%8F%AF%E9%80%89"><span class="nav-text">更新系统 (可选)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2"><span class="nav-text">远程桌面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xfce4%E6%A1%8C%E9%9D%A2%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-text">xfce4 桌面的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%91%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE%E5%91%A2%EF%BC%9F%EF%BC%81"><span class="nav-text">我的快捷键呢？！</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CUDA-amp-CUDNN"><span class="nav-text">CUDA &amp; CUDNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PYPI-%E6%B8%85%E5%8D%8E%E9%95%9C%E5%83%8F"><span class="nav-text">PYPI | 清华镜像</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="J.M."
+      src="/assets/images/favicon-224x224.png">
+  <p class="site-author-name" itemprop="name">J.M.</p>
+  <div class="site-description" itemprop="description">Jacky Matt</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/imyhxy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;imyhxy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:imyhxy@gmail.com" title="E-Mail → mailto:imyhxy@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://imyhxy.github.io/blog/2018/03/19/linux-server-deploy.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/images/favicon-224x224.png">
+      <meta itemprop="name" content="J.M.">
+      <meta itemprop="description" content="Jacky Matt">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="imyhxy">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu 系统安装 - Server
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 03-19-2018 23:05:10" itemprop="dateCreated datePublished" datetime="2018-03-19T23:05:10+08:00">03-19-2018</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">Tutorial</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <div class="note info"><p>鉴于我经常把系统弄出各种疑难杂症，所以把装机过程记录下来，下次装机不用四处找教程，节省时间。</p>
+</div>
+
+<h1 id="系统的安装"><a href="#系统的安装" class="headerlink" title="系统的安装"></a>系统的安装</h1><h2 id="系统的选择"><a href="#系统的选择" class="headerlink" title="系统的选择"></a>系统的选择</h2><p>以下四个系统都可以尝试，Server 版注重性能，但是没有图形界面，目前使用的是 16.04 桌面版</p>
+<ol>
+<li>Ubuntu 16.04 LST Desktop 64-bit <a target="_blank" rel="noopener" href="http://releases.ubuntu.com/16.04/ubuntu-16.04.4-desktop-amd64.iso.torrent">(Download)</a></li>
+<li>Ubuntu 14.04 LST Desktop 64-bit <a target="_blank" rel="noopener" href="http://releases.ubuntu.com/14.04/ubuntu-14.04.5-desktop-amd64.iso.torrent">(Download)</a></li>
+<li>Ubuntu 16.04 LST Server 64-bit <a target="_blank" rel="noopener" href="http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso.torrent">(Download)</a></li>
+<li>Ubuntu 14.04 LST Server 64-bit <a target="_blank" rel="noopener" href="http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso.torrent">(Download)</a></li>
+</ol>
+<p>下载好想要的系统后，把 ISO 文件解压到一个格式为 FAT 的 U 盘的根目录，也就是打开 U 盘就能直接看到解压的文件</p>
+<div class="note warning"><p>Ubuntu 14.04 的用户请使用刻录工具刻录镜像，并采用 Legency 启动方式</p>
+</div>
+
+<h2 id="进入BIOS"><a href="#进入BIOS" class="headerlink" title="进入BIOS"></a>进入 BIOS</h2><ul>
+<li>对于全新未装机的电脑，开机按 <strong>DEL</strong> 进 BISO，把启动方式设置为 UEFI，然后选择 U 盘为第一个启动项。</li>
+<li>对于已装系统的电脑，如果本身已经设置了 UEFI 启动，那么可以直接按 F12，然后选择要启动的 U 盘。</li>
+</ul>
+<h2 id="Ubuntu安装过程"><a href="#Ubuntu安装过程" class="headerlink" title="Ubuntu安装过程"></a>Ubuntu 安装过程</h2><p>选择 U 盘启动后，系统会进入一个用户选择界面，这里直接选择安装 Ubuntu</p>
+<div class="note danger"><p>如果系统安装了 Nvidia 显卡，直接开机将造成黑屏，所以在这里我们不要直接选择<strong>安装 Ubuntu</strong>，解决办法是按 <strong>e 键</strong>进入自定义开机编辑模式，在 splash 后填写 nomodeset，或者 nouveau.modeset=0，如下，然后再开机</p>
+</div>
+
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.........splash nomodset</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="分区建议"><a href="#分区建议" class="headerlink" title="分区建议"></a>分区建议</h3><table>
+<thead>
+<tr>
+<th align="center">分区</th>
+<th align="center">大小</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"> EFI</td>
+<td align="center">128M</td>
+<td align="center"> 位于硬盘的第一个分区上</td>
+</tr>
+<tr>
+<td align="center"> BOOT</td>
+<td align="center">512M</td>
+<td align="center"> 紧接 EFI 分区</td>
+</tr>
+<tr>
+<td align="center"> swap</td>
+<td align="center">24G</td>
+<td align="center"> 理论上应和内存大小一致，但基本没用</td>
+</tr>
+<tr>
+<td align="center"> root</td>
+<td align="center">128G</td>
+<td align="center"> 目前体验是 128G 已经足够</td>
+</tr>
+<tr>
+<td align="center"> home</td>
+<td align="center">-</td>
+<td align="center"> 如果不想重装时备份数据</td>
+</tr>
+</tbody></table>
+<div class="note info"><p>设备名尽量选择独特且有意义的名字，避免在配置路由端口转发时难以区分</p>
+</div>
+
+<h1 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h1><h2 id="Blacklist-Nvidia"><a href="#Blacklist-Nvidia" class="headerlink" title="Blacklist Nvidia"></a>Blacklist Nvidia</h2><p>没错，我们首先要做的就是禁用第三方英伟达驱动，否则每次开机都要手动设置，贼麻烦</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/modprobe.d/blacklist.conf</span><br><span class="line">[<span class="built_in">shift</span> + g] 以下内容仅供不会vi的同学参考</span><br><span class="line">o</span><br><span class="line">blacklist nouveau</span><br><span class="line">[esc]</span><br><span class="line">:wq</span><br></pre></td></tr></tbody></table></figure>
+
+<p>或者：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su                      <span class="comment"># 输入root的密码</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'blacklist nouveau'</span> &gt;&gt; /etc/modprobe.d/blacklist.conf</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>可以是用 <strong>ctrl+alt+t</strong> 快捷键调出终端</p>
+</div>
+
+<h2 id="更新系统-可选"><a href="#更新系统-可选" class="headerlink" title="更新系统(可选)"></a>更新系统 (可选)</h2><p>更新系统前，先到 system settings-&gt;software &amp; updates-&gt;download from-&gt;select best server，选择一个速度最快的安装源，然后调出终端输入</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; \</span><br><span class="line">sudo apt-get -y dist-upgrade &amp;&amp; \</span><br><span class="line">sudo apt-get -y upgrade &amp;&amp; \</span><br><span class="line">sudo apt-get autoremove</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="远程桌面"><a href="#远程桌面" class="headerlink" title="远程桌面"></a>远程桌面</h2><p>等待系统更新完成后，再安装远程服务软件，当然也可以直接安装完远程桌面，然后在远程更新！</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get -y install xrdp vnc4server xfce4</span><br><span class="line"><span class="built_in">echo</span> xfce4-session &gt; .xsession</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note primary"><p>如果你在服务器上添加了用户，也要到该用户目录下新建一个.xsession 文件，并填入 <strong>xfce4-session</strong>，该文件的目的是告诉 xrdp 服务，当用户远程连接登录系统后应该使用进入哪个桌面环境，如果没有设置该文件，那么用户远程连接后，将进入无桌面环境的状况，具体表现为<strong>又灰又花</strong>的一大片背景色</p>
+</div>
+
+<p>上面的远程桌面配置是针对单用户设置的，也就是两个用户无法同时登录到服务器上，为了解决多用户登录问题，我们需要开放用户在登录时选择登录端口的权限，具体为更改 **/etc/xrdp/xrdp.ini <strong>文件，把 [xrdp1] 项目下的</strong> port=-1 <strong>更改为</strong> port=ask-1**</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">[xrdp1]</span><br><span class="line">name=sesman-Xvnc</span><br><span class="line">lib=libvnc.so</span><br><span class="line">username=ask</span><br><span class="line">password=ask</span><br><span class="line">ip=127.0.0.1</span><br><span class="line">port=ask-1</span><br><span class="line">......</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>更多内容：找回丢失的连接，其他高级参数的部分解释，<a target="_blank" rel="noopener" href="https://www.cnblogs.com/ilanni/p/4542896.html">参考这里</a>，以及<a target="_blank" rel="noopener" href="https://www.ilanni.com/?p=9622">这里</a><br><br>简单来讲是通过查看 **/var/log/xrdp-sesman.log<strong>，以及通过</strong> netstat -tunpl** 命令查看 Xvnc 监听端口</p>
+</div>
+
+<p><strong>完成了以上步骤后，通过重启 xrdp 服务使设置生效</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service xrdp restart</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note primary"><p>Tips: 在 Ubuntu 上可以通过 ifconfig 可以查看系统的 ip 地址，然后在 win 下通过 <strong>win+R</strong> 组合键换出运行，输入 mstsc 打开远程桌面，填入 ip 即可连接。</p>
+</div>
+
+<h2 id="xfce4桌面的配置"><a href="#xfce4桌面的配置" class="headerlink" title="xfce4桌面的配置"></a>xfce4 桌面的配置</h2><p>通过上述方式建立的远程桌面环境是 xfce4，不是原来 Ubuntu 的桌面了</p>
+<h3 id="我的快捷键呢？！"><a href="#我的快捷键呢？！" class="headerlink" title="我的快捷键呢？！"></a>我的快捷键呢？！</h3><p>你会发现远程桌面的很多快捷键都失效了，又多了一些奇奇怪怪的快捷键，这里简单介绍几个大家常用的修改</p>
+<ul>
+<li>tab 补全：到 settings-&gt;window manager-&gt;keyboard 里，把 super+tab 快捷键清除</li>
+<li> ctrl+alt+t 唤出终端：首先由于 gnome-terminal 在 xfce4 桌面环境里变得迟钝，所以不推荐使用可以安装 xfce4-terminal，然后新增键盘快捷方式 (在上面那里)，应用程序直接输入 xfce4-terminal 就可以了 </li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install xfce4-terminal</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>部分程序无法在远程桌面打开问题，比如 vscode：</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/lib</span><br><span class="line">cp /usr/lib/x86_64-linux-gnu/libxcb.so.1 ~/lib</span><br><span class="line">sed -i <span class="string">'s/BIG-REQUESTS/_IG-REQUESTS/'</span> ~/lib/libxcb.so.1</span><br><span class="line">LD_LIBRARY_PATH=<span class="variable">$HOME</span>/lib</span><br></pre></td></tr></tbody></table></figure>
+
+<p>或者你不想备份，直接对原文件进行修改：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i <span class="string">'s/BIG-REQUESTS/_IG-REQUESTS/'</span> /usr/lib/x86_64-linux-gnu/libxcb.so.1</span><br><span class="line">sudo sed -i <span class="string">'s/BIG-REQUESTS/_IG-REQUESTS/'</span> /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0</span><br></pre></td></tr></tbody></table></figure>
+
+ <div class="note info"><p>想了解详细原因的可以查看<a target="_blank" rel="noopener" href="https://github.com/Microsoft/vscode/issues/3451">这里</a></p>
+</div>
+
+<ul>
+<li> Alt 键放大桌面：使用编辑器有时会用到 Alt 键，这时会有可能进入到放大镜模式，通过再次按下 Alt 键，并使用鼠标滚轮缩放桌面都原始状态后，在系统设置中将其清除</li>
+</ul>
+<h2 id="CUDA-amp-CUDNN"><a href="#CUDA-amp-CUDNN" class="headerlink" title="CUDA &amp; CUDNN"></a>CUDA &amp; CUDNN</h2><div class="note success"><p>推荐安装 Tensorflow 最新兼容版，目前是 CUDA9.0</p>
+</div>
+
+<p>官网下载 CUDA 的 deb 包</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i cuda[---].deb      <span class="comment"># 加入到安装本地源</span></span><br><span class="line">sudo apt-get update             <span class="comment"># 刷新安装源</span></span><br><span class="line">sudo apt-get install cuda       <span class="comment"># 安装</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>官网下载 CUDNN 的压缩包</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf CUDNN[---].tar.gz ./</span><br><span class="line">sudo cp -r cuda /usr/<span class="built_in">local</span>/</span><br><span class="line">sudo chmod a+x /usr/<span class="built_in">local</span>/cuda/include/cudnn* /usr/<span class="built_in">local</span>/cuda/lib64/cudnn*</span><br></pre></td></tr></tbody></table></figure>
+
+<p>添加搜索路径</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"export PATH=<span class="variable">$PATH</span>:/usr/local/cuda/bin"</span> &gt;&gt; ~/.bashrc   <span class="comment"># CUDA</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"export LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:/usr/local/cuda/lib： \ # 不要换行</span></span><br><span class="line"><span class="string">        /usr/local/cuda/lib64"</span> &gt;&gt; ~/.bashrc <span class="comment"># cuDNN</span></span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="PYPI-清华镜像"><a href="#PYPI-清华镜像" class="headerlink" title="PYPI | 清华镜像"></a>PYPI | 清华镜像</h2><p>使用清华镜像加速 Python 包的安装，一次性的使用方法是在 install 命令里加入 - i 参数：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package</span><br></pre></td></tr></tbody></table></figure>
+
+<p>永久更改的方法是在 **~/.config/pip/pip.conf** 创建配置文件，并输入内容：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>详细内容可以参考<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/pypi/">清华 Pypi 官网</a></p>
+</div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+
+<span style="margin-top:30px; color:var(--blockquote-color); font-size:0.85em">
+</span>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+              <a href="/tags/ubuntu/" rel="tag"><i class="fa fa-tag"></i> ubuntu</a>
+              <a href="/tags/server/" rel="tag"><i class="fa fa-tag"></i> server</a>
+              <a href="/tags/remote-desktop/" rel="tag"><i class="fa fa-tag"></i> remote desktop</a>
+              <a href="/tags/installation/" rel="tag"><i class="fa fa-tag"></i> installation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2018/03/19/hexo-theme-next.html" rel="prev" title="Introdution to hexo theme - Next">
+                  <i class="fa fa-chevron-left"></i> Introdution to hexo theme - Next
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2018/03/20/netease-refused-connection.html" rel="next" title="网易云音乐无法联网">
+                  网易云音乐无法联网 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fas fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">J.M.</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@next-theme/pjax@0.4.0/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js"></script>
+<script src="/assets/flower/cdn/js/utils.js"></script><script src="/assets/flower/cdn/js/next-boot.js"></script><script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '.page-configurations',
+    '.main-inner',
+    '.post-toc-wrap',
+    '.languages',
+    '.pjax'
+  ],
+  analytics: false,
+  cacheBust: false,
+  scrollRestoration: false,
+  scrollTo: !CONFIG.bookmark.enable
+});
+
+document.addEventListener('pjax:success', () => {
+  pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  const hasTOC = document.querySelector('.post-toc');
+  document.querySelector('.sidebar-inner').classList.toggle('sidebar-nav-active', hasTOC);
+  document.querySelector(hasTOC ? '.sidebar-nav-toc' : '.sidebar-nav-overview').click();
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+  
+
+<script src="/assets/flower/cdn/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+    <div class="pjax">
+
+  
+
+
+
+
+
+
+    <script type="text/javascript">
+        if(window.location.hash){
+            var checkExist = setInterval(function() {
+                if ($(window.location.hash).length) {
+                    $('html, body').animate({scrollTop: $(window.location.hash).offset().top-90}, 1000);
+                    clearInterval(checkExist);
+                }
+            }, 100);
+        }
+    </script>
+
+    </div>
+</body>
+</html>

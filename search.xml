@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hexo &amp; gitpage equal to blogs</title>
+    <url>//blog/2018/03/16/deploy-hexo.html</url>
+    <content><![CDATA[<h3 id="What-is-Hexo？"><a href="#What-is-Hexo？" class="headerlink" title="What is Hexo？"></a>What is Hexo？</h3><div class="note primary"><p><a href="https://hexo.io/">Hexo</a> 是一个静态网站生成软件，它通过预定义的网页模板，把 <a href="https://daringfireball.net/projects/markdown/">Markdown</a> 文件渲染为一个静态网页。除此之外，Hexo 还支持高度的自定义设置，通过应用社区共享的主题样式，你能轻易地实现网页的个性化。同时，我们可以把 Hexo 生成的静态网页部署到静态网站托管服务器上，例如：<a href="https://pages.github.com/">GitPage</a>，让我们能快速搭建一个个人博客。</p>
+</div>
+
+<h3 id="What-is-Github-Pages？"><a href="#What-is-Github-Pages？" class="headerlink" title="What is Github Pages？"></a>What is Github Pages？</h3><div class="note primary"><p>Github Pages, 简称 GitPage，是 <a href="https://github.com/">Github</a> 推出的静态网站托管服务，它能直接从一个仓库中生成个人，组织或项目的主页。但 GitPage 的托管服务不支持服务器端代码，仓库容量限制为 1G，每小时可编译网站次数为 10 次，每月可用流量为 100G。想了解更多详细内容查看<a href="https://help.github.com/categories/github-pages-basics/">官方文档</a>。</p>
+</div>
+
+<hr>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>Hexo 的静态文件生成，以及插件管理功能都是依赖 <a href="https://nodejs.org/">Node.js</a> 软件包来实现的。另外，我们需要用 <a href="https://git-scm.com/">git</a> 来把本地的静态网页部署到 github 仓库上。所以我们需要先安装以下两个软件：</p>
+<ul>
+<li>Node.js</li>
+<li>Git</li>
+</ul>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ol>
+<li><a href="https://www.npmjs.com/">npm</a> 的安装 </li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get -y install curl</span><br><span class="line">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash</span><br><span class="line">. .profile  <span class="comment"># 重新读取配置文件</span></span><br><span class="line"><span class="comment"># bash</span></span><br><span class="line">nvm install --lst</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note danger"><p>请不要在安装完 hexo 后删除 nvm，也不要在 WSL 里安装 nvm，因为它将拖慢 WSL 的启动速度，一个可行的解决方法是把 nvm 的启动命令放到.nvmrc 脚本中，需要时用 source .nvmrc 读取。</p>
+</div>
+
+<ol start="2">
+<li>Git 的安装 </li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get -y install git</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装 Hexo</h2><p>当安装完 npm 和 git 后，我们就可以使用 npm 来安装 Hexo 及其插件了。使用以下命令把 Hexo 安装到全局环境中：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">npm install -g hexo</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p><strong>提示：</strong>国内的同学可以使用<a href="http://http//npm.taobao.org/">淘宝 npm 镜像源</a>加速安装过程，淘宝的 npm 镜像源每隔十分钟会与<a href="https://npmjs.org/">官方服务器</a>进行全量同步。可以在<code>.bashrc</code> 中设置别名来快速使用淘宝 npm 服务。</p>
+</div>
+
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">#alias for cnpm</span></span><br><span class="line"><span class="built_in">alias</span> cnpm=<span class="string">"npm --registry=https://registry.npm.taobao.org \</span></span><br><span class="line"><span class="string">  --cache=<span class="variable">$HOME</span>/.npm/.cache/cnpm \</span></span><br><span class="line"><span class="string">  --disturl=https://npm.taobao.org/dist \</span></span><br><span class="line"><span class="string">  --userconfig=<span class="variable">$HOME</span>/.cnpmrc"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>使用以下命令手动同步一个模块：</p>
+</div>
+
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">cnpm sync &lt;sample&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="主程序安装"><a href="#主程序安装" class="headerlink" title="主程序安装"></a>主程序安装</h3><p>按照以下步骤新建一个 Hexo 项目，并进行初始化：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">mkdir &lt;hexo_folder&gt;</span><br><span class="line"><span class="built_in">cd</span> &lt;hexo_folder&gt;</span><br><span class="line">npm install hexo --save</span><br><span class="line">hexo init</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">npm install hexo-excerpt --save</span><br><span class="line">npm install hexo-generator-archive --save</span><br><span class="line">npm install hexo-generator-category --save</span><br><span class="line">npm install hexo-generator-index --save</span><br><span class="line">npm install hexo-generator-tag --save</span><br><span class="line">npm install hexo-generator-searchdb --save</span><br><span class="line">npm install hexo-pangu --save</span><br><span class="line">npm install hexo-renderer-ejs --save</span><br><span class="line">npm install hexo-renderer-marked --save</span><br><span class="line">npm install hexo-renderer-stylus --save</span><br><span class="line">npm install hexo-server --save</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="主题下载"><a href="#主题下载" class="headerlink" title="主题下载"></a>主题下载</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> &lt;hexo_folder&gt;</span><br><span class="line">git submodule add git@github.com:next-theme/hexo-theme-next.git themes/next</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h3><p>在 <hexo_folder> 目录下有网站的配置文件_config.yml，使用文本编辑器更改文件内的 theme 字段为 next，注意不应使用 &lt;tab&gt;，而应该使用空格进行缩进。</hexo_folder></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h2 id="Hexo常用命令"><a href="#Hexo常用命令" class="headerlink" title="Hexo常用命令"></a>Hexo 常用命令</h2><h3 id="从模板创建新博文"><a href="#从模板创建新博文" class="headerlink" title="从模板创建新博文"></a>从模板创建新博文</h3><p>新建的博文默认保存在 &lt;hexo_folder&gt;/source/_posts/&lt;postName.md&gt;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">hexo new [layout] postName</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中 layout 为可选参数，用来表示新建博文的样式，默认样式值在_config 中定义。在 scaffolds 目录下保存了所有可用样式文件，用户可以手动添加样式文件，或者更改现有的样式文件，例如 &lt;hexo&gt;/scaffolds/post.md</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">title: {{ title }}</span><br><span class="line">date: {{ date }}</span><br><span class="line">tags:</span><br><span class="line">---</span><br></pre></td></tr></tbody></table></figure>
+
+<p>我们可以添加 categories 到样式文件中，这样就可以避免每次手动输入</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">title: {{ title }}</span><br><span class="line">date: {{ date }}</span><br><span class="line">categories:</span><br><span class="line">tags:</span><br><span class="line">---</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note primary"><p>可以添加以下的预定义参数到布局文件头部</p>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th align="center">描述</th>
+<th align="center">默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td> layout</td>
+<td align="center"> 布局</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td> date</td>
+<td align="center"> 建立日期</td>
+<td align="center">文件建立日期</td>
+</tr>
+<tr>
+<td> updated</td>
+<td align="center"> 更新日期</td>
+<td align="center">文件更新日期</td>
+</tr>
+<tr>
+<td> comments</td>
+<td align="center"> 文章的评论功能</td>
+<td align="center"> true</td>
+</tr>
+<tr>
+<td>tags</td>
+<td align="center"> 标签</td>
+<td align="center">不适用于分页</td>
+</tr>
+<tr>
+<td> categories</td>
+<td align="center"> 分类</td>
+<td align="center">不适用于分页</td>
+</tr>
+<tr>
+<td> permalink</td>
+<td align="center"> 覆盖文章网址</td>
+<td align="center">.</td>
+</tr>
+</tbody></table>
+<div class="note danger"><p>为了确保文件头变量有效，在两个大括号间不应有空格</p>
+</div>
+
+<h3 id="生成静态文件"><a href="#生成静态文件" class="headerlink" title="生成静态文件"></a>生成静态文件</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># hexo g</span></span><br><span class="line">hexo generate</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="运行服务器"><a href="#运行服务器" class="headerlink" title="运行服务器"></a>运行服务器</h3><p>运行本地服务器，可以通过浏览器打开 localhost:4000 观察</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># hexo s</span></span><br><span class="line">hexo server</span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行本地服务器到调试状态</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">hexo s --debug</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="部署到GitPage"><a href="#部署到GitPage" class="headerlink" title="部署到GitPage"></a>部署到 GitPage</h2><p>在部署前需要先配置好 git，把公钥添加到了 github 服务器上，同时更改_config.yml 文件，找到以下字段并更改为你想部署的 git 仓库</p>
+<figure class="highlight yml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">      <span class="attr">repository:</span> <span class="string">git@github.com:&lt;username&gt;/&lt;username&gt;.github.io.git</span></span><br><span class="line">      <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p><strong>注意：</strong>为了能直接通过 &lt;username&gt;.github.io 来访问你的主页，你需要建立的 github 仓库也应具有相同的名字</p>
+</div>
+
+<p>执行以下命令提交修改</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">hexo g -deploy</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="Fancybox"><a href="#Fancybox" class="headerlink" title="Fancybox"></a>Fancybox</h1><p>通过在博文的头部添加 photos 项来添加图片到文件开头，图片地址每行添加一个</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">title: imyhxy</span><br><span class="line">photos:</span><br><span class="line">- http://www.example.com/photos-0.jpg</span><br><span class="line">- http://www.example.com/photos-1.jpg</span><br><span class="line">---</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="高级"><a href="#高级" class="headerlink" title="高级"></a>高级</h1><p>手动设置博文的 <strong>date</strong> 和 <strong>update</strong> 时间：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: {{ title }}</span><br><span class="line">date: YYYY-MM-DD HH:MM:SS</span><br><span class="line">update: YYYY-MM-DD HH:MM:SS</span><br><span class="line">tags: {{ tags }}</span><br><span class="line">categories: {{ categories }}</span><br><span class="line">---</span><br></pre></td></tr></tbody></table></figure>
+
+<p>设置新建博文<strong>文件名格式</strong>，在_config.yml 文件中找到 new_post_name 字段，并设置：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">new_post_name: :year-:month:-:day-:title.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>独立资料文件夹</strong> (Asset) 代表 source 资料文件夹外的所有文档，但你打开了独立资料文件夹功能后，在新建博文时将新建同名的资料文件夹，你可以将你在博文里引用的图片，CSS，JS 等文件放到资料文件夹里，方便管理</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">post_asset_folder: <span class="literal">true</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>资源引用</strong>，如果你通过 Markdown 语法引用资源，那么资源不会显示在博客首页上</p>
+<figure class="highlight markdown"><table><tbody><tr><td class="code"><pre><span class="line">![](/example.jpg)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>正确的引用方法是使用内置标签引用：</p>
+<figure class="highlight markdown"><table><tbody><tr><td class="code"><pre><span class="line">{% asset<span class="emphasis">_path slug [title] %}</span></span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>gitpage</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Introdution to hexo theme - Next</title>
+    <url>//blog/2018/03/19/hexo-theme-next.html</url>
+    <content><![CDATA[<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h3 id="主题下载"><a href="#主题下载" class="headerlink" title="主题下载"></a>主题下载</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> &lt;hexo_folder&gt;</span><br><span class="line">git <span class="built_in">clone</span> git@github.com:imyhxy/hexo-theme-next.git</span><br><span class="line">mv hexo-theme-next themes/next</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h3><p>在 <hexo_folder> 目录下有网站的配置文件_config.yml，使用文本编辑器更改文件内的 theme 字段为 next，注意不应使用 &lt;tab&gt;，而应该使用空格进行缩进。</hexo_folder></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">theme: next</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="首页博文的长度"><a href="#首页博文的长度" class="headerlink" title="首页博文的长度"></a>首页博文的长度</h3><p>一种方法是在写文章时加入</p>
+
+<a id="more"></a>
+
+
+<p>文章会在标签处自动断开，另一种方法是设置主题的_config.yml 文件：</p>
+<figure class="highlight yml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># Automatically Excerpt. Not recommend.</span></span><br><span class="line"><span class="comment"># Please use &lt;!-- more --&gt; in the post to control excerpt accurately.</span></span><br><span class="line"><span class="attr">auto_excerpt:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">length:</span> <span class="number">150</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="扩增6种样式标签"><a href="#扩增6种样式标签" class="headerlink" title="扩增6种样式标签"></a>扩增 6 种样式标签</h3><p>在扩增的标签内的 Markdown 支持度下降，建议只插入纯文本，使用方法如下</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">{% note class_name %} content {% endnote %}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>所有 classname 如下：</p>
+<ul>
+<li>default</li>
+<li>primary</li>
+<li>success</li>
+<li>info</li>
+<li>warning</li>
+<li>danger</li>
+</ul>
+<p>样例：</p>
+<div class="note default"><p>Default </p>
+</div>
+
+<div class="note primary"><p>Primary </p>
+</div>
+
+<div class="note success"><p>Success </p>
+</div>
+
+<div class="note info"><p>Info </p>
+</div>
+
+<div class="note warning"><p>Warning </p>
+</div>
+
+<div class="note danger"><p>Danger </p>
+</div>
+]]></content>
+      <categories>
+        <category>Introdution</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>themes</tag>
+        <tag>next</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Ubuntu 系统安装 - Server</title>
+    <url>//blog/2018/03/19/linux-server-deploy.html</url>
+    <content><![CDATA[<div class="note info"><p>鉴于我经常把系统弄出各种疑难杂症，所以把装机过程记录下来，下次装机不用四处找教程，节省时间。</p>
+</div>
+
+<h1 id="系统的安装"><a href="#系统的安装" class="headerlink" title="系统的安装"></a>系统的安装</h1><h2 id="系统的选择"><a href="#系统的选择" class="headerlink" title="系统的选择"></a>系统的选择</h2><p>以下四个系统都可以尝试，Server 版注重性能，但是没有图形界面，目前使用的是 16.04 桌面版</p>
+<ol>
+<li>Ubuntu 16.04 LST Desktop 64-bit <a href="http://releases.ubuntu.com/16.04/ubuntu-16.04.4-desktop-amd64.iso.torrent">(Download)</a></li>
+<li>Ubuntu 14.04 LST Desktop 64-bit <a href="http://releases.ubuntu.com/14.04/ubuntu-14.04.5-desktop-amd64.iso.torrent">(Download)</a></li>
+<li>Ubuntu 16.04 LST Server 64-bit <a href="http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso.torrent">(Download)</a></li>
+<li>Ubuntu 14.04 LST Server 64-bit <a href="http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso.torrent">(Download)</a></li>
+</ol>
+<p>下载好想要的系统后，把 ISO 文件解压到一个格式为 FAT 的 U 盘的根目录，也就是打开 U 盘就能直接看到解压的文件</p>
+<div class="note warning"><p>Ubuntu 14.04 的用户请使用刻录工具刻录镜像，并采用 Legency 启动方式</p>
+</div>
+
+<h2 id="进入BIOS"><a href="#进入BIOS" class="headerlink" title="进入BIOS"></a>进入 BIOS</h2><ul>
+<li>对于全新未装机的电脑，开机按 <strong>DEL</strong> 进 BISO，把启动方式设置为 UEFI，然后选择 U 盘为第一个启动项。</li>
+<li>对于已装系统的电脑，如果本身已经设置了 UEFI 启动，那么可以直接按 F12，然后选择要启动的 U 盘。</li>
+</ul>
+<h2 id="Ubuntu安装过程"><a href="#Ubuntu安装过程" class="headerlink" title="Ubuntu安装过程"></a>Ubuntu 安装过程</h2><p>选择 U 盘启动后，系统会进入一个用户选择界面，这里直接选择安装 Ubuntu</p>
+<div class="note danger"><p>如果系统安装了 Nvidia 显卡，直接开机将造成黑屏，所以在这里我们不要直接选择<strong>安装 Ubuntu</strong>，解决办法是按 <strong>e 键</strong>进入自定义开机编辑模式，在 splash 后填写 nomodeset，或者 nouveau.modeset=0，如下，然后再开机</p>
+</div>
+
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">.........splash nomodset</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="分区建议"><a href="#分区建议" class="headerlink" title="分区建议"></a>分区建议</h3><table>
+<thead>
+<tr>
+<th align="center">分区</th>
+<th align="center">大小</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"> EFI</td>
+<td align="center">128M</td>
+<td align="center"> 位于硬盘的第一个分区上</td>
+</tr>
+<tr>
+<td align="center"> BOOT</td>
+<td align="center">512M</td>
+<td align="center"> 紧接 EFI 分区</td>
+</tr>
+<tr>
+<td align="center"> swap</td>
+<td align="center">24G</td>
+<td align="center"> 理论上应和内存大小一致，但基本没用</td>
+</tr>
+<tr>
+<td align="center"> root</td>
+<td align="center">128G</td>
+<td align="center"> 目前体验是 128G 已经足够</td>
+</tr>
+<tr>
+<td align="center"> home</td>
+<td align="center">-</td>
+<td align="center"> 如果不想重装时备份数据</td>
+</tr>
+</tbody></table>
+<div class="note info"><p>设备名尽量选择独特且有意义的名字，避免在配置路由端口转发时难以区分</p>
+</div>
+
+<h1 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h1><h2 id="Blacklist-Nvidia"><a href="#Blacklist-Nvidia" class="headerlink" title="Blacklist Nvidia"></a>Blacklist Nvidia</h2><p>没错，我们首先要做的就是禁用第三方英伟达驱动，否则每次开机都要手动设置，贼麻烦</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo vi /etc/modprobe.d/blacklist.conf</span><br><span class="line">[<span class="built_in">shift</span> + g] 以下内容仅供不会vi的同学参考</span><br><span class="line">o</span><br><span class="line">blacklist nouveau</span><br><span class="line">[esc]</span><br><span class="line">:wq</span><br></pre></td></tr></tbody></table></figure>
+
+<p>或者：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">su                      <span class="comment"># 输入root的密码</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'blacklist nouveau'</span> &gt;&gt; /etc/modprobe.d/blacklist.conf</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>可以是用 <strong>ctrl+alt+t</strong> 快捷键调出终端</p>
+</div>
+
+<h2 id="更新系统-可选"><a href="#更新系统-可选" class="headerlink" title="更新系统(可选)"></a>更新系统 (可选)</h2><p>更新系统前，先到 system settings-&gt;software &amp; updates-&gt;download from-&gt;select best server，选择一个速度最快的安装源，然后调出终端输入</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get update &amp;&amp; \</span><br><span class="line">sudo apt-get -y dist-upgrade &amp;&amp; \</span><br><span class="line">sudo apt-get -y upgrade &amp;&amp; \</span><br><span class="line">sudo apt-get autoremove</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="远程桌面"><a href="#远程桌面" class="headerlink" title="远程桌面"></a>远程桌面</h2><p>等待系统更新完成后，再安装远程服务软件，当然也可以直接安装完远程桌面，然后在远程更新！</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get -y install xrdp vnc4server xfce4</span><br><span class="line"><span class="built_in">echo</span> xfce4-session &gt; .xsession</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note primary"><p>如果你在服务器上添加了用户，也要到该用户目录下新建一个.xsession 文件，并填入 <strong>xfce4-session</strong>，该文件的目的是告诉 xrdp 服务，当用户远程连接登录系统后应该使用进入哪个桌面环境，如果没有设置该文件，那么用户远程连接后，将进入无桌面环境的状况，具体表现为<strong>又灰又花</strong>的一大片背景色</p>
+</div>
+
+<p>上面的远程桌面配置是针对单用户设置的，也就是两个用户无法同时登录到服务器上，为了解决多用户登录问题，我们需要开放用户在登录时选择登录端口的权限，具体为更改 **/etc/xrdp/xrdp.ini <strong>文件，把 [xrdp1] 项目下的</strong> port=-1 <strong>更改为</strong> port=ask-1**</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">......</span><br><span class="line">[xrdp1]</span><br><span class="line">name=sesman-Xvnc</span><br><span class="line">lib=libvnc.so</span><br><span class="line">username=ask</span><br><span class="line">password=ask</span><br><span class="line">ip=127.0.0.1</span><br><span class="line">port=ask-1</span><br><span class="line">......</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>更多内容：找回丢失的连接，其他高级参数的部分解释，<a href="https://www.cnblogs.com/ilanni/p/4542896.html">参考这里</a>，以及<a href="https://www.ilanni.com/?p=9622">这里</a><br><br>简单来讲是通过查看 **/var/log/xrdp-sesman.log<strong>，以及通过</strong> netstat -tunpl** 命令查看 Xvnc 监听端口</p>
+</div>
+
+<p><strong>完成了以上步骤后，通过重启 xrdp 服务使设置生效</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo service xrdp restart</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note primary"><p>Tips: 在 Ubuntu 上可以通过 ifconfig 可以查看系统的 ip 地址，然后在 win 下通过 <strong>win+R</strong> 组合键换出运行，输入 mstsc 打开远程桌面，填入 ip 即可连接。</p>
+</div>
+
+<h2 id="xfce4桌面的配置"><a href="#xfce4桌面的配置" class="headerlink" title="xfce4桌面的配置"></a>xfce4 桌面的配置</h2><p>通过上述方式建立的远程桌面环境是 xfce4，不是原来 Ubuntu 的桌面了</p>
+<h3 id="我的快捷键呢？！"><a href="#我的快捷键呢？！" class="headerlink" title="我的快捷键呢？！"></a>我的快捷键呢？！</h3><p>你会发现远程桌面的很多快捷键都失效了，又多了一些奇奇怪怪的快捷键，这里简单介绍几个大家常用的修改</p>
+<ul>
+<li>tab 补全：到 settings-&gt;window manager-&gt;keyboard 里，把 super+tab 快捷键清除</li>
+<li> ctrl+alt+t 唤出终端：首先由于 gnome-terminal 在 xfce4 桌面环境里变得迟钝，所以不推荐使用可以安装 xfce4-terminal，然后新增键盘快捷方式 (在上面那里)，应用程序直接输入 xfce4-terminal 就可以了 </li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install xfce4-terminal</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>部分程序无法在远程桌面打开问题，比如 vscode：</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">mkdir ~/lib</span><br><span class="line">cp /usr/lib/x86_64-linux-gnu/libxcb.so.1 ~/lib</span><br><span class="line">sed -i <span class="string">'s/BIG-REQUESTS/_IG-REQUESTS/'</span> ~/lib/libxcb.so.1</span><br><span class="line">LD_LIBRARY_PATH=<span class="variable">$HOME</span>/lib</span><br></pre></td></tr></tbody></table></figure>
+
+<p>或者你不想备份，直接对原文件进行修改：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo sed -i <span class="string">'s/BIG-REQUESTS/_IG-REQUESTS/'</span> /usr/lib/x86_64-linux-gnu/libxcb.so.1</span><br><span class="line">sudo sed -i <span class="string">'s/BIG-REQUESTS/_IG-REQUESTS/'</span> /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0</span><br></pre></td></tr></tbody></table></figure>
+
+ <div class="note info"><p>想了解详细原因的可以查看<a href="https://github.com/Microsoft/vscode/issues/3451">这里</a></p>
+</div>
+
+<ul>
+<li> Alt 键放大桌面：使用编辑器有时会用到 Alt 键，这时会有可能进入到放大镜模式，通过再次按下 Alt 键，并使用鼠标滚轮缩放桌面都原始状态后，在系统设置中将其清除</li>
+</ul>
+<h2 id="CUDA-amp-CUDNN"><a href="#CUDA-amp-CUDNN" class="headerlink" title="CUDA &amp; CUDNN"></a>CUDA &amp; CUDNN</h2><div class="note success"><p>推荐安装 Tensorflow 最新兼容版，目前是 CUDA9.0</p>
+</div>
+
+<p>官网下载 CUDA 的 deb 包</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo dpkg -i cuda[---].deb      <span class="comment"># 加入到安装本地源</span></span><br><span class="line">sudo apt-get update             <span class="comment"># 刷新安装源</span></span><br><span class="line">sudo apt-get install cuda       <span class="comment"># 安装</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>官网下载 CUDNN 的压缩包</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">tar -zxvf CUDNN[---].tar.gz ./</span><br><span class="line">sudo cp -r cuda /usr/<span class="built_in">local</span>/</span><br><span class="line">sudo chmod a+x /usr/<span class="built_in">local</span>/cuda/include/cudnn* /usr/<span class="built_in">local</span>/cuda/lib64/cudnn*</span><br></pre></td></tr></tbody></table></figure>
+
+<p>添加搜索路径</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"export PATH=<span class="variable">$PATH</span>:/usr/local/cuda/bin"</span> &gt;&gt; ~/.bashrc   <span class="comment"># CUDA</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"export LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:/usr/local/cuda/lib： \ # 不要换行</span></span><br><span class="line"><span class="string">        /usr/local/cuda/lib64"</span> &gt;&gt; ~/.bashrc <span class="comment"># cuDNN</span></span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="PYPI-清华镜像"><a href="#PYPI-清华镜像" class="headerlink" title="PYPI | 清华镜像"></a>PYPI | 清华镜像</h2><p>使用清华镜像加速 Python 包的安装，一次性的使用方法是在 install 命令里加入 - i 参数：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package</span><br></pre></td></tr></tbody></table></figure>
+
+<p>永久更改的方法是在 **~/.config/pip/pip.conf** 创建配置文件，并输入内容：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>详细内容可以参考<a href="https://mirrors.tuna.tsinghua.edu.cn/help/pypi/">清华 Pypi 官网</a></p>
+</div>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>ubuntu</tag>
+        <tag>server</tag>
+        <tag>remote desktop</tag>
+        <tag>installation</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网易云音乐无法联网</title>
+    <url>//blog/2018/03/20/netease-refused-connection.html</url>
+    <content><![CDATA[<h1 id="症状"><a href="#症状" class="headerlink" title="症状"></a>症状</h1><p>前几天网易云突然不太能联网了，具体表现为：</p>
+<ul>
+<li>联网断断续续，通常刚开机可用，刚打开软件时可以播放一首歌</li>
+<li>有时可加载歌词，评论，封面，但无法播放</li>
+<li>网页版网易云也不能进入</li>
+<li>同一个局域网内的用户没有出现同样的问题</li>
+<li>分析流量，显示 connection refused 错误</li>
+</ul>
+<h1 id="尝试解决步骤"><a href="#尝试解决步骤" class="headerlink" title="尝试解决步骤"></a>尝试解决步骤</h1><ul>
+<li>清楚代理缓存</li>
+<li>检查 Hosts 是否被污染</li>
+<li> IE 的高级功能里，恢复默认值</li>
+<li> netsh winsock reset</li>
+<li> 使用 win10 的网络重置功能</li>
+<li>检查网卡的 DNS 设置，如果有必要，手动指定 DNS</li>
+<li> 卸载重装网易云</li>
+</ul>
+<div class="note success"><p>按照以上步骤，终于解决了问题，又可以随心所欲地听歌了</p>
+</div>
+]]></content>
+      <categories>
+        <category>Fixed</category>
+      </categories>
+      <tags>
+        <tag>netease</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow 常用技巧收集</title>
+    <url>//blog/2018/04/14/tensorflow-commonly-use-trick.html</url>
+    <content><![CDATA[<h1 id="备份与恢复模型"><a href="#备份与恢复模型" class="headerlink" title="备份与恢复模型"></a>备份与恢复模型</h1><h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">saver = tf.train.Saver()</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    saver.save(sess, saved_model_path)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    saver.restore(sess, saved_model_path)</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="部分恢复模型"><a href="#部分恢复模型" class="headerlink" title="部分恢复模型"></a>部分恢复模型</h2><p>首先通过 tf.trainable_variables () 获得新模型的所有可训练参数，然后把新增参数剔除。新建一个 saver 对象，并把要恢复的参数传进去。</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">restore_variable = tf.trainable_variables()</span><br><span class="line"></span><br><span class="line">&lt;do some modified jobs here&gt;</span><br><span class="line"></span><br><span class="line">saver = tf.train.Saver(modified_restore_variable)</span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    saver.restore(sess, model_path)</span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>TensorFlow</category>
+      </categories>
+      <tags>
+        <tag>tensorflow</tag>
+        <tag>save and restore</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Xming Configuration</title>
+    <url>//blog/2018/04/17/xming-configuration.html</url>
+    <content><![CDATA[<h1 id="What-is-Xming"><a href="#What-is-Xming" class="headerlink" title="What is Xming"></a>What is Xming</h1><p><a href="https://sourceforge.net/projects/xming/">Xming</a> 是一个运行在 Windows 下的 X-window 服务器程序。结合 <a href="https://www.putty.org/">Putty</a> 可以达到远程登录 Linux 服务器的效果。</p>
+<hr>
+<h1 id="Xming-and-WSL"><a href="#Xming-and-WSL" class="headerlink" title="Xming and WSL"></a>Xming and WSL</h1><p>WSL (Windows Subsystem for Linux) 是嵌入 win10 系统中的一个 Linux 子系统。通过设置 Display 环境变量可以令子系统中的 GUI 程序通过 Xming 显示出来。</p>
+<ul>
+<li>首先下载 Xming 并安装</li>
+<li>运行 Xming 保持默认参数，（默认参数设置 Xming 为服务器 0）</li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> DISPLAY=127.0.0.1:0.0</span><br><span class="line"><span class="comment"># 启动一个程测试</span></span><br><span class="line">firefox &amp;</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h1 id="Xming-and-Linux-Server"><a href="#Xming-and-Linux-Server" class="headerlink" title="Xming and Linux Server"></a>Xming and Linux Server</h1><p>当然 Xming 最重要的还是与服务器的搭配使用。</p>
+<ul>
+<li>首先在 Windows 客户端下启动 Xming，记住 Xming 服务器编号 (Server_Num default is 0)</li>
+<li> 设置路由器的端口映射，Xming 的监听端口为 <strong>6000+$(Server_Num)</strong></li>
+<li> 设置服务器的环境变量 </li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 把 $(xxx) 替换为真实值</span></span><br><span class="line"><span class="comment"># e.g. export 192.168.1.1:0.0</span></span><br><span class="line"><span class="built_in">export</span> $(windows_ip):$(server_num).0</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>设置 Windows 防火墙，开放 **6000+$(Server_Num)** 端口</li>
+<li>添加白名单，在 <strong>C:\Program Files (x86)\Xming\X0.hosts</strong> 里加入服务器 ip，每行一个</li>
+</ul>
+<div class="note info"><p>为了在多用户同用户名的服务器上使用，可以不在.bashrc 里加入环境变量。而是使用一个配置文件如：.usernamerc，然后每次登录后使用 **. .usernamerc** 命令加载用户相关的环境变量信息。</p>
+</div>
+]]></content>
+      <categories>
+        <category>Introdution</category>
+      </categories>
+      <tags>
+        <tag>xming</tag>
+        <tag>remote</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Numpy 保存数组信息</title>
+    <url>//blog/2018/04/21/numpy-save.html</url>
+    <content><![CDATA[<hr>
+<h1 id="保存为bin文件"><a href="#保存为bin文件" class="headerlink" title="保存为bin文件"></a><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.chararray.tofile.html#numpy.chararray.tofile">保存为 bin 文件</a></h1><p>以此方法保存的二进制文件无法保存它的结构信息，统一使用 C 语言的数组排列顺序输出，读取是要指定数据格式以及 <strong>reshape</strong> 到需要的形状。</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">numpy.ndarray.tofile(fid, sep=<span class="string">''</span>, <span class="built_in">format</span>=<span class="string">'%s'</span>)</span><br><span class="line">numpy.fromfile(file, dtype=<span class="built_in">float</span>, count=-<span class="number">1</span>, sep=<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># e.g.</span></span><br><span class="line">foo.tofile(<span class="string">'foo.bin'</span>)</span><br><span class="line">bar = np.fromfile(<span class="string">'foo.bin'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h1 id="保存为npy文件"><a href="#保存为npy文件" class="headerlink" title="保存为npy文件"></a><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.save.html">保存为 npy 文件</a></h1><p>npy 格式是 numpy 特有的格式，每个 npy 文件保存一个数组信息，包括了数组的结构信息。使用 npy 格式可以指定是否使用 pickle 压缩，以及方便数据在 <strong>python2</strong> 和 <strong>python3</strong> 之间传输。</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">numpy.save(file, arr, allow_pickle=<span class="literal">True</span>, fix_imports=<span class="literal">True</span>)</span><br><span class="line">numpy.load(file, mmap_mode=<span class="literal">None</span>, allow_pickle=<span class="literal">True</span>, fix_imports=<span class="literal">True</span>, encoding=<span class="string">'ASCII'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<h1 id="保存为npz文件"><a href="#保存为npz文件" class="headerlink" title="保存为npz文件"></a><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.savez.html">保存为 npz 文件</a></h1><p>npz 格式文件可以将多个 numpy 数组以非压缩的方式储存到一起。</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">numpy.savez(file, *args, **kwds)</span><br><span class="line"><span class="comment"># 如果把数组直接传入函数，则数组的索引是 'arr_0', 'arr_1'</span></span><br><span class="line"><span class="comment"># e.g.</span></span><br><span class="line">numpy.savez(<span class="string">'foo.npz'</span>, bar, corge=corge)</span><br><span class="line">qux = numpy.load(<span class="string">'foo.npz'</span>)</span><br><span class="line">qux.files</span><br><span class="line">[<span class="string">'arr_0'</span>, <span class="string">'corge'</span>]</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note info"><p>另一个函数将多个 numpy 数组压缩后保存为 npz 格式文件 ---<a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.savez_compressed.html"><strong>numpy.savez_compressed</strong></a></p>
+</div>
+
+<hr>
+<h1 id="保存为txt文件"><a href="#保存为txt文件" class="headerlink" title="保存为txt文件"></a><pangu> </pangu><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html">保存为 txt 文件</a></h1><p>txt 文件格式能保存 numpy 的一维和二维数组</p>
+<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line">numpy.savetxt(fname, X, fmt=<span class="string">'%.18e'</span>, delimiter=<span class="string">' '</span>, newline=<span class="string">'\n'</span>, header=<span class="string">''</span>, footer=<span class="string">''</span>, comments=<span class="string">'# '</span>, encoding=<span class="literal">None</span>)</span><br><span class="line">numpy.genfromtxt(fname, dtype=&lt;class 'float'&gt;, comments='#', delimiter=None, skip_header=0, skip_footer=0, converters=None, missing_values=None, filling_values=None, usecols=None, names=None, excludelist=None, deletechars=None, replace_space='_', autostrip=False, case_sensitive=True, defaultfmt='f%i', unpack=None, usemask=False, loose=True, invalid_raise=True, max_rows=None, encoding='bytes')</span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>Introdution</category>
+      </categories>
+      <tags>
+        <tag>numpy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Win10 开始菜单添加快捷方式</title>
+    <url>//blog/2018/04/21/win10-start-menu.html</url>
+    <content><![CDATA[<h1 id="Win10-开始菜单添加自定义快捷键"><a href="#Win10-开始菜单添加自定义快捷键" class="headerlink" title="Win10 开始菜单添加自定义快捷键"></a>Win10 开始菜单添加自定义快捷键</h1><hr>
+<p>给开始菜单添加快捷方式后，可直接搜索应用程序名称。但是绿色应用不会自动创建快捷方式，需要手动创建，通过在应用程序上直接右键可以选择 <strong>pin to start menu</strong>。不过这样只会添加磁贴到开始菜单，无法建立搜索的索引。需要把快捷方式复制到：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">C:\ProgramData\Microsoft\Windows\Start Menu\Programs</span><br></pre></td></tr></tbody></table></figure>
+
+<div class="note danger"><p>如果已经 <strong>pin to start menu</strong>，此时通过复制快捷方式到上述文件夹是无法添加到开始菜单的，必须先 <strong>unpin</strong> 磁贴，然后在 <strong>all apps</strong> 里右键 <strong>pin</strong> 到开始菜单里。</p>
+</div>
+]]></content>
+      <categories>
+        <category>Fixed</category>
+      </categories>
+      <tags>
+        <tag>win10</tag>
+        <tag>start-menu</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在 ArchLinux 上安装 xfce4</title>
+    <url>//blog/2018/10/29/arch-linux-xrdp.html</url>
+    <content><![CDATA[<p>之前也试过在 ArchLinux 上安装 xfce4，当时就发现同一个用户不能同时打开两个 session，但当时只是在笔记本上安装的，所以对多 session 的需求不高，也就没太在意。最近要在服务器上安装远程桌面，然后就很有必要解决这个问题了。</p>
+<h2 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h2><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo pacman -S xfce4 xfce4-goodies</span><br><span class="line">sudo pacman -S xrdp tigervnc</span><br></pre></td></tr></tbody></table></figure>
+
+<p>和 Ubuntu 最大的区别在于启动脚本的不同。ArchLinux 需要在 ${HOME} 目录下新建一个.xinitrc 文件，这个文件就是 xrdp 新建一个虚拟桌面时会执行的脚本。然后在里面加入：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">unset</span> SESSION_MANAGER</span><br><span class="line"><span class="built_in">unset</span> DBUS_SESSION_BUS_ADDRESS</span><br><span class="line"><span class="built_in">exec</span> dbus-launch startxfce4</span><br></pre></td></tr></tbody></table></figure>
+
+<p>剩下的都是常规步骤。</p>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Server reference manual</title>
+    <url>//blog/2019/05/07/server-reference-manual.html</url>
+    <content><![CDATA[<div class="note info"><p>记录一下服务器的个人使用习惯，仅供参考。</p>
+</div>
+
+<h1 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h1><p>服务器人员流动比较大，有时甚至多人共用同一台服务器，每个用户使用单独的用户名登陆服务器是资源管理的第一步，同时可以避免以下问题：</p>
+<ul>
+<li>现在是谁在用 GPU？</li>
+<li>为什么服务器这么卡？</li>
+<li>磁盘怎么突然就满了？</li>
+<li>这个大文件是谁的？</li>
+<li>谁删了我的代码？</li>
+<li>…</li>
+</ul>
+<h3 id="新建用户"><a href="#新建用户" class="headerlink" title="新建用户"></a>新建用户</h3><p>每次转移到一台新的服务器都应该使用<strong>登陆账户</strong>为自己新建一个用户名，不要直接使用 root 用户，甚至连登陆账户也不应该设置为 root 账户，因为 root 账户的很多操作是直接影响系统环境的，这不仅会给服务器留下可能的后遗症，导致下一个使用者无所适从，还会影响其他依赖系统环境的用户，比如上来就把 CUDA 版本给更新了，so bad!</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo useradd -m -s /bin/bash foo  <span class="comment"># 新建一个名字为foo的用户，并创建HOME目录以及使用bash作为登陆shell</span></span><br><span class="line">sudo passwd foo  <span class="comment"># 设置foo的密码</span></span><br><span class="line">sudo usermod -aG sudo foo  <span class="comment"># 在ubuntu系统下可以把用户加入sudo组，获得管理员权限</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>这样一个带管理员权限的账号就建立完成了。对于 <code>foo</code> 用户，它所有的文件，代码，程序都应该保留在 <code>/home/foo/</code> 目录下。</p>
+<h3 id="用户信息"><a href="#用户信息" class="headerlink" title="用户信息"></a>用户信息</h3><ol>
+<li><p>查看基本信息</p>
+ <figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># 每一行都是一个用户，第一个数字是uid，uid&gt;1000才是普通用户</span></span><br><span class="line"><span class="comment"># 此命令用于快速查看当前服务器存在的用户数</span></span><br><span class="line">cat /etc/passwd  </span><br><span class="line">who  <span class="comment"># 当前ssh登陆服务器的用户，不会显示通过xrdp登陆的用户</span></span><br><span class="line">whoami  <span class="comment"># 当前登陆用户名</span></span><br><span class="line">w  <span class="comment"># 显示当前服务器负载情况，登陆用户数，每个用户的登陆时长，CPU占用时间，当前执行命令</span></span><br><span class="line">id  <span class="comment"># 显示当前用户uid, gid以及groups</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>更改密码与锁定用户</p>
+ <figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo passwd foo  <span class="comment"># 更改foo的登陆密码</span></span><br><span class="line">sudo passwd -l foo  <span class="comment"># 锁定foo用户，即无法登陆</span></span><br><span class="line">sudo passwd -u foo  <span class="comment"># 解锁foo用户</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>删除用户</p>
+ <figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo userdel -r foo  <span class="comment"># 删除foo用户及其HOME目录，！谨慎操作，这可没有回收站功能</span></span><br></pre></td></tr></tbody></table></figure>
+<div class="note warning"><p>大部分情况下我们不应该修改其他用户的信息，如果发现有新增不熟悉账户可以通过 <code>passwd -l username</code> 锁定该用户。</p>
+</div>
+
+</li>
+</ol>
+<h3 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h3><p>查看系统的磁盘使用情况</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">df -h</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看每个用户的磁盘使用情况</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">sudo du -h --max-depth=1</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li><p>绝大部分情况下不要使用 <code>sudo pip install</code> 进行安装，使用 <code>sudo pip</code> 会直接对系统的 <code>/usr/lib/python3.x/site-packages</code> 目录进行修改，任何依赖系统自带包的用户都将受到影响。同时，更改系统默认包也是系统出现疑难杂症的重要原因，因为 ubuntu 中很多系统程序都依赖系统本身的 python3.5 和 python2.7，因此也不要尝试升级系统的 python 版本，或者更改系统的 python 软连接。通用的做法是使用 python 环境管理工具，如 anaconda，virtualenv，pyenv 等工具进行版本管理。</p>
+ <figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">pip install --user bar  <span class="comment"># 安装bar包到用户目录</span></span><br><span class="line">pip show bar  <span class="comment"># 显示bar包的信息</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p> 也可以通过修改配置文件，更改 pip 的默认安装位置</p>
+ <figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span>  <span class="comment"># 回到用户HOME目录</span></span><br><span class="line">mkdir -p .config/pip  <span class="comment"># 新建文件夹</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">"[install]\nuser = true\n"</span> &gt;&gt; .config/pip/pip.conf  <span class="comment"># 写入配置文件</span></span><br></pre></td></tr></tbody></table></figure>
+
+</li>
+</ol>
+<hr>
+
+<h2 id="推荐搭配"><a href="#推荐搭配" class="headerlink" title="推荐搭配"></a>推荐搭配</h2><ol>
+<li><p>很多时候我们都可以直接在服务器上使用 pycharm 进行程序开发，但是如果服务器是多人使用且配置不佳，使用 pycharm 等程序可能导致程序抢夺或者系统缓慢，又或者网络较差导致画面实时性不佳。此时推荐服务器不要安装任何高负载程序，如 IDE，浏览器等。可以考虑使用 pycharm 的远程调试功能，调用服务器的 python 解析器进行调试。远程桌面仅用来查看图片，或运行 gedit 等轻量级应用。</p>
+</li>
+<li><p>对于没有远程桌面的服务器，可以使用 putty，WSL，Cygwin 等终端程序进行登陆（目前使用 WSL+cmder 的搭配），使用 screen，或 nohup 把程序放到后台运行，避免因网络中断而导致程序停止（毕竟我们的交换机很渣。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>ubuntu</tag>
+        <tag>server</tag>
+      </tags>
+  </entry>
+</search>
